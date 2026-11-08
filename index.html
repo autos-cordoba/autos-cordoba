@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AUTOS CÓRDOBA | Compra y venta de vehículos</title>
+<style>
+:root{--navy:#07111f;--navy2:#101e30;--blue:#078cf0;--blue2:#24b5ff;--ink:#172333;--muted:#718096;--line:#e5ebf2;--bg:#f4f7fb;--white:#fff;--green:#16865b;--red:#c43d4d;--shadow:0 12px 32px #071a2b12}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial}button,input,select,textarea{font:inherit}button{cursor:pointer;border:0}.top{background:linear-gradient(110deg,#050b13,#10233b);color:white}.nav{max-width:1180px;margin:auto;padding:17px 22px;display:flex;align-items:center;justify-content:space-between;gap:18px}.brand{display:flex;align-items:center;gap:11px;font-weight:900;letter-spacing:.5px}.brandmark{width:42px;height:42px;border:2px solid #168ff5;border-radius:12px;display:grid;place-items:center;color:#45baff;font-size:22px;box-shadow:0 0 22px #078cf044}.brand small{display:block;font-size:10px;color:#9fb4ca;letter-spacing:2px;font-weight:700}.navlinks{display:flex;gap:8px;flex-wrap:wrap}.navlinks button{background:transparent;color:#dce8f5;padding:9px 12px;border-radius:9px}.navlinks button.active,.navlinks button:hover{background:#ffffff18;color:#fff}.container{max-width:1180px;margin:auto;padding:26px 22px 60px}.hero{background:linear-gradient(115deg,#0b1727 0%,#112c49 65%,#075b9d 100%);border-radius:22px;color:white;padding:38px;display:grid;grid-template-columns:1.2fr .8fr;gap:20px;overflow:hidden;position:relative}.hero:after{content:"";position:absolute;width:360px;height:360px;border:1px solid #ffffff22;border-radius:50%;right:-90px;top:-120px;box-shadow:0 0 0 35px #ffffff08,0 0 0 75px #ffffff05}.eyebrow{color:#5fc1ff;font-weight:800;letter-spacing:2px;text-transform:uppercase;font-size:11px}.hero h1{font-size:clamp(30px,5vw,52px);line-height:1.05;margin:12px 0}.hero p{color:#c7d7e7;max-width:540px}.hero-art{align-self:center;text-align:center;font-size:100px;filter:drop-shadow(0 14px 18px #0008);z-index:1}.searchbox{background:white;color:var(--ink);padding:15px;border-radius:14px;display:grid;grid-template-columns:1.2fr 1fr 1fr auto;gap:9px;margin-top:22px;box-shadow:var(--shadow)}input,select,textarea{width:100%;border:1px solid var(--line);border-radius:9px;padding:11px 12px;background:white;color:var(--ink);outline:none}input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px #078cf018}.btn{padding:11px 16px;border-radius:9px;font-weight:800;background:var(--blue);color:white}.btn:hover{background:#0879ce}.btn.dark{background:var(--navy2)}.btn.light{background:#eaf5ff;color:#0877c7}.btn.ghost{background:#edf1f6;color:#334155}.btn.danger{background:#fff0f1;color:var(--red)}.sectionhead{display:flex;justify-content:space-between;align-items:end;gap:12px;margin:30px 0 15px}.sectionhead h2{margin:0;font-size:24px}.muted{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:17px}.car{background:white;border:1px solid var(--line);border-radius:15px;overflow:hidden;box-shadow:0 4px 16px #0b1b2b08}.carimg{height:160px;background:linear-gradient(135deg,#dbe6f0,#9eafc1);display:grid;place-items:center;font-size:64px;position:relative}.tag{position:absolute;left:12px;top:12px;background:#07111fdc;color:white;border-radius:30px;padding:5px 9px;font-size:11px;font-weight:800}.carbody{padding:15px}.carbody h3{margin:0 0 5px;font-size:18px}.price{font-size:21px;font-weight:900;color:#087dcc;margin:8px 0}.specs{display:flex;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:12px}.carfoot{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);margin-top:13px;padding-top:12px}.pill{font-size:11px;background:#edf5fc;color:#176a9e;padding:5px 8px;border-radius:20px;font-weight:800}.panel{background:white;border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:var(--shadow);margin-top:18px}.panel h2,.panel h3{margin-top:0}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.stat{background:#f6f9fc;border:1px solid var(--line);border-radius:12px;padding:15px}.stat b{font-size:26px;display:block}.formgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:13px}.field label{display:block;font-size:12px;font-weight:800;color:#526174;margin:0 0 6px}.field.full{grid-column:1/-1}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}.tablewrap{overflow:auto}table{border-collapse:collapse;width:100%;min-width:620px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--line);font-size:13px}th{color:#64748b;background:#f8fafc}.notice{padding:12px 14px;border-radius:10px;background:#fff8e8;color:#76551a;font-size:13px;margin-top:18px}.hidden{display:none!important}.empty{padding:35px;text-align:center;color:var(--muted);background:white;border:1px dashed #cbd5e1;border-radius:14px}.footer{color:#8ca0b5;text-align:center;font-size:12px;padding:30px 10px}.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#10233b;color:white;padding:12px 18px;border-radius:10px;box-shadow:var(--shadow);z-index:10;display:none}
+@media(max-width:800px){.hero{grid-template-columns:1fr;padding:26px}.hero-art{display:none}.searchbox{grid-template-columns:1fr 1fr}.searchbox button{grid-column:1/-1}.grid{grid-template-columns:repeat(2,1fr)}.stats{grid-template-columns:repeat(2,1fr)}.nav{align-items:flex-start;flex-direction:column}.navlinks{width:100%}}
+@media(max-width:520px){.container{padding:16px 13px 40px}.grid{grid-template-columns:1fr}.formgrid{grid-template-columns:1fr}.field.full{grid-column:auto}.hero{border-radius:15px}.searchbox{grid-template-columns:1fr}.searchbox button{grid-column:auto}.sectionhead{align-items:start;flex-direction:column}}
+</style>
+</head>
+<body>
+<header class="top">
+ <div class="nav">
+  <div class="brand"><div class="brandmark">AC</div><div>AUTOS CÓRDOBA<small>COMPRÁ · VENDÉ · ENCONTRÁ</small></div></div>
+  <div class="navlinks">
+   <button class="active" data-page="home">Inicio</button><button data-page="catalog">Comprar</button><button data-page="publish">Publicar</button><button data-page="dealer">Mi agencia</button><button data-page="admin">Administración</button>
+  </div>
+ </div>
+</header>
+<main class="container">
+<section id="home" class="page">
+ <div class="hero">
+  <div><div class="eyebrow">El portal automotor de Córdoba</div><h1>Tu próximo auto<br>está acá.</h1><p>Encontrá oportunidades, compará vehículos y contactá directamente con vendedores de Córdoba y alrededores.</p>
+   <div class="searchbox"><input id="homeQuery" placeholder="Marca o modelo"><select id="homeType"><option value="">Todos los vendedores</option><option>Concesionaria</option><option>Particular</option></select><select id="homeCity"><option value="">Todas las zonas</option><option>Córdoba Capital</option><option>Villa Carlos Paz</option><option>Villa Allende</option></select><button class="btn" onclick="homeSearch()">Buscar autos</button></div>
+  </div><div class="hero-art">🚘</div>
+ </div>
+ <div class="sectionhead"><div><div class="eyebrow">Selección destacada</div><h2>Vehículos para descubrir</h2></div><button class="btn light" onclick="showPage('catalog')">Ver todos</button></div>
+ <div id="featured" class="grid"></div>
+ <div class="notice">Prototipo de prueba: las publicaciones se guardan solamente en este navegador. Todavía no está conectado a una base de datos ni recibe anuncios de otros usuarios.</div>
+</section>
+<section id="catalog" class="page hidden">
+ <div class="sectionhead"><div><div class="eyebrow">Encontrá tu vehículo</div><h2>Autos publicados</h2></div><span id="resultCount" class="muted"></span></div>
+ <div class="panel"><div class="formgrid">
+  <div class="field"><label>Buscar marca o modelo</label><input id="q" placeholder="Ej. Volkswagen Gol"></div>
+  <div class="field"><label>Tipo de vendedor</label><select id="seller"><option value="">Todos</option><option>Concesionaria</option><option>Particular</option></select></div>
+  <div class="field"><label>Localidad</label><select id="city"><option value="">Todas</option><option>Córdoba Capital</option><option>Villa Carlos Paz</option><option>Villa Allende</option><option>La Calera</option></select></div>
+  <div class="field"><label>Precio máximo (ARS)</label><input id="maxPrice" type="number" placeholder="Sin límite"></div>
+ </div><div class="actions"><button class="btn" onclick="renderCatalog()">Aplicar filtros</button><button class="btn ghost" onclick="clearFilters()">Limpiar</button></div></div>
+ <div id="catalogGrid" class="grid" style="margin-top:18px"></div>
+</section>
+<section id="publish" class="page hidden">
+ <div class="sectionhead"><div><div class="eyebrow">Sumá tu vehículo</div><h2>Publicar un auto</h2><p class="muted">Completá los datos para crear una publicación de demostración.</p></div></div>
+ <div class="panel"><form id="carForm"><div class="formgrid">
+  <div class="field"><label>Marca *</label><input name="brand" required placeholder="Ej. Chevrolet"></div>
+  <div class="field"><label>Modelo *</label><input name="model" required placeholder="Ej. Cruze LT"></div>
+  <div class="field"><label>Año *</label><input name="year" required type="number" min="1950" max="2027" placeholder="2020"></div>
+  <div class="field"><label>Precio en pesos *</label><input name="price" required type="number" min="1" placeholder="15000000"></div>
+  <div class="field"><label>Kilómetros</label><input name="km" type="number" min="0" placeholder="80000"></div>
+  <div class="field"><label>Localidad</label><select name="city"><option>Córdoba Capital</option><option>Villa Carlos Paz</option><option>Villa Allende</option><option>La Calera</option></select></div>
+  <div class="field"><label>Tipo de vendedor</label><select name="seller"><option>Concesionaria</option><option>Particular</option></select></div>
+  <div class="field"><label>WhatsApp de contacto</label><input name="phone" placeholder="351..."></div>
+  <div class="field full"><label>Descripción</label><textarea name="description" rows="3" placeholder="Contá los detalles del vehículo..."></textarea></div>
+ </div><div class="actions"><button class="btn" type="submit">Crear publicación de prueba</button><button class="btn ghost" type="reset">Borrar formulario</button></div></form></div>
+</section>
+<section id="dealer" class="page hidden">
+ <div class="sectionhead"><div><div class="eyebrow">Espacio de vendedor</div><h2>Panel de mi agencia</h2><p class="muted">Vista de ejemplo para administrar inventario y consultas.</p></div><button class="btn" onclick="showPage('publish')">+ Cargar vehículo</button></div>
+ <div class="stats"><div class="stat"><span class="muted">Vehículos activos</span><b id="dealerCount">0</b></div><div class="stat"><span class="muted">Consultas recibidas</span><b>0</b></div><div class="stat"><span class="muted">Reservados</span><b>0</b></div><div class="stat"><span class="muted">Vendidos</span><b>0</b></div></div>
+ <div class="panel"><h3>Mi inventario</h3><div id="dealerTable" class="tablewrap"></div></div>
+</section>
+<section id="admin" class="page hidden">
+ <div class="sectionhead"><div><div class="eyebrow">Propietario de la plataforma</div><h2>Administración general</h2><p class="muted">Panel visual de gestión. El acceso todavía no está protegido por inicio de sesión.</p></div></div>
+ <div class="stats"><div class="stat"><span class="muted">Publicaciones</span><b id="adminCars">0</b></div><div class="stat"><span class="muted">Agencias</span><b>1</b></div><div class="stat"><span class="muted">Usuarios</span><b>1</b></div><div class="stat"><span class="muted">Ingresos</span><b>$0</b></div></div>
+ <div class="panel"><h3>Control de publicaciones</h3><div id="adminTable" class="tablewrap"></div></div>
+ <div class="panel"><h3>Datos del propietario</h3><p><b>Correo:</b> laurtarocroci@gmail.com</p><p><b>Rol previsto:</b> propietario principal con acceso total y posibilidad de crear administradores.</p></div>
+</section>
+<div class="footer">AUTOS CÓRDOBA · Prototipo funcional local · Córdoba, Argentina</div>
+</main>
+<div id="toast" class="toast"></div>
+<script>
+const seed=[
+{id:1,brand:"Chevrolet",model:"Cruze LT 1.8",year:2012,price:12100000,km:220000,city:"Córdoba Capital",seller:"Concesionaria",phone:"3512454601",description:"Primera mano. No permuto.",featured:true},
+{id:2,brand:"Volkswagen",model:"Gol Trend 1.6",year:2017,price:10500000,km:98000,city:"Córdoba Capital",seller:"Particular",phone:"",description:"Excelente estado general.",featured:true},
+{id:3,brand:"Ford",model:"Focus SE",year:2016,price:13900000,km:115000,city:"Villa Carlos Paz",seller:"Concesionaria",phone:"",description:"Muy buen estado. Consultar.",featured:true}
+];
+let cars=JSON.parse(localStorage.getItem("ac_cars")||"null")||seed;
+function save(){localStorage.setItem("ac_cars",JSON.stringify(cars));}
+function money(n){return "$"+Number(n).toLocaleString("es-AR");}
+function card(c){return `<article class="car"><div class="carimg"><span class="tag">${c.seller}</span>🚗</div><div class="carbody"><h3>${esc(c.brand)} ${esc(c.model)}</h3><div class="specs"><span>${c.year}</span><span>${Number(c.km||0).toLocaleString("es-AR")} km</span><span>${esc(c.city)}</span></div><div class="price">${money(c.price)}</div><div class="muted" style="font-size:12px">${esc(c.description||"Consultar detalles del vehículo")}</div><div class="carfoot"><span class="pill">Publicado en Autos Córdoba</span>${c.phone?`<a class="btn light" style="text-decoration:none;padding:7px 10px" target="_blank" href="https://wa.me/549${c.phone.replace(/\\D/g,"")}">WhatsApp</a>`:"<span class='muted'>Consultar</span>"}</div></div></article>`}
+function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));}
+function showPage(id){document.querySelectorAll(".page").forEach(p=>p.classList.add("hidden"));document.getElementById(id).classList.remove("hidden");document.querySelectorAll("[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===id));if(id==="catalog")renderCatalog();if(id==="dealer"||id==="admin")renderTables();window.scrollTo({top:0,behavior:"smooth"});}
+document.querySelectorAll("[data-page]").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.page)));
+function renderFeatured(){document.getElementById("featured").innerHTML=cars.slice(0,3).map(card).join("")||'<div class="empty">Todavía no hay vehículos publicados.</div>';}
+function renderCatalog(){let q=(document.getElementById("q").value||"").toLowerCase(),s=document.getElementById("seller").value,city=document.getElementById("city").value,max=Number(document.getElementById("maxPrice").value||0);let list=cars.filter(c=>(!q||(c.brand+" "+c.model).toLowerCase().includes(q))&&(!s||c.seller===s)&&(!city||c.city===city)&&(!max||c.price<=max));document.getElementById("resultCount").textContent=list.length+" vehículos";document.getElementById("catalogGrid").innerHTML=list.map(card).join("")||'<div class="empty">No encontramos vehículos con esos filtros.</div>';}
+function clearFilters(){["q","seller","city","maxPrice"].forEach(id=>document.getElementById(id).value="");renderCatalog();}
+function homeSearch(){document.getElementById("q").value=document.getElementById("homeQuery").value;document.getElementById("seller").value=document.getElementById("homeType").value;document.getElementById("city").value=document.getElementById("homeCity").value;showPage("catalog");}
+function renderTables(){let rows=cars.map(c=>`<tr><td><b>${esc(c.brand)} ${esc(c.model)}</b><br><span class="muted">${c.year} · ${esc(c.city)}</span></td><td>${money(c.price)}</td><td>${esc(c.seller)}</td><td><button class="btn danger" style="padding:6px 9px" onclick="removeCar(${c.id})">Eliminar</button></td></tr>`).join("");let table=rows?`<table><thead><tr><th>Vehículo</th><th>Precio</th><th>Vendedor</th><th>Acción</th></tr></thead><tbody>${rows}</tbody></table>`:'<div class="empty">No hay publicaciones todavía.</div>';document.getElementById("dealerTable").innerHTML=table;document.getElementById("adminTable").innerHTML=table;document.getElementById("dealerCount").textContent=cars.length;document.getElementById("adminCars").textContent=cars.length;}
+function removeCar(id){if(confirm("¿Eliminar esta publicación de prueba?")){cars=cars.filter(c=>c.id!==id);save();refresh();toast("Publicación eliminada");}}
+function refresh(){renderFeatured();renderCatalog();renderTables();}
+function toast(msg){let t=document.getElementById("toast");t.textContent=msg;t.style.display="block";setTimeout(()=>t.style.display="none",2300);}
+document.getElementById("carForm").addEventListener("submit",e=>{e.preventDefault();let f=new FormData(e.target),c=Object.fromEntries(f.entries());c.id=Date.now();c.year=Number(c.year);c.price=Number(c.price);c.km=Number(c.km||0);cars.unshift(c);save();e.target.reset();refresh();showPage("catalog");toast("Vehículo agregado al prototipo");});
+refresh();
+</script>
+</body></html>
