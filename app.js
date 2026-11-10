@@ -15,19 +15,32 @@ const FUEL = { nafta: "Nafta", diesel: "Diésel", gnc: "GNC", hibrido: "Híbrido
 const TRANS = { manual: "Manual", automatica: "Automática" };
 const STATUS = { pending: "En revisión", approved: "Publicado", rejected: "Rechazado", sold: "Vendido", suspended: "Suspendida" };
 const ROLES = { owner: "Propietario", admin: "Administrador", dealer: "Concesionaria", individual: "Particular" };
-const CARD_FIELDS = "id,brand,model,version,year,price,mileage,city,seller_type,fuel,transmission,photos,featured,status,created_at,dealership:dealerships(name)";
+const CARD_FIELDS = "id,brand,model,version,year,price,currency,mileage,city,seller_type,fuel,transmission,photos,featured,status,created_at,dealership:dealerships(name)";
 
 const state = {
   user: null, profile: null, isStaff: false, isOwner: false,
   memberships: [], ready: false,
-  filters: { q: "", seller: "", city: "", maxPrice: "", minYear: "", fuel: "", transmission: "", sort: "recent" },
+  filters: { q: "", seller: "", city: "", priceCur: "ARS", maxPrice: "", minYear: "", fuel: "", transmission: "", sort: "recent" },
 };
 
 /* ---------- Utilidades ---------- */
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const esc = s => String(s ?? "").replace(/[&<>"']/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
-const money = n => n ? "$ " + Number(n).toLocaleString("es-AR") : "Consultar precio";
+const money = (n, cur) => n ? (cur === "USD" ? "US$ " : "$ ") + Number(n).toLocaleString("es-AR") : "Consultar precio";
+const digits = x => String(x ?? "").replace(/\D/g, "");
+const dots = x => { const d = digits(x).slice(0, 15); return d ? Number(d).toLocaleString("es-AR") : ""; };
+/* Pone los puntos de miles mientras se escribe (25.000.000) */
+function numInputs(root) {
+  $$("input[data-num]", root).forEach(inp => {
+    inp.addEventListener("input", () => {
+      const fromEnd = inp.value.length - (inp.selectionStart ?? inp.value.length);
+      inp.value = dots(inp.value);
+      const p = Math.max(0, inp.value.length - fromEnd);
+      try { inp.setSelectionRange(p, p); } catch (_) { }
+    });
+  });
+}
 const km = n => n == null ? "" : Number(n).toLocaleString("es-AR") + " km";
 const fdate = d => d ? new Date(d).toLocaleDateString("es-AR", { day: "2-digit", month: "short", year: "numeric" }) : "";
 const photoUrl = p => db.storage.from(BUCKET).getPublicUrl(p).data.publicUrl;
@@ -156,7 +169,7 @@ function carCard(v) {
   return `<a class="car" href="#/auto/${v.id}">
    <div class="carimg">${img}<span class="tag">${esc(seller)}</span>${v.featured ? '<span class="tag star">★ Destacado</span>' : ""}</div>
    <div class="carbody"><h3>${esc(title(v))}</h3><div class="version">${esc(v.version || "")}&nbsp;</div>
-    <div class="price">${money(v.price)}</div>
+    <div class="price">${money(v.price, v.currency)}</div>
     <div class="specs"><span>${esc(v.year || "")}</span><span>${km(v.mileage)}</span><span>${esc(FUEL[v.fuel] || "")}</span><span>${esc(v.city || "")}</span></div>
    </div></a>`;
 }
@@ -167,25 +180,27 @@ async function renderHome() {
   const f = state.filters;
   app().innerHTML = `
   <section class="hero">
+   <div class="hero-car" aria-hidden="true">🚘</div>
    <div class="eyebrow">El portal automotor de Córdoba</div>
-   <h1>Tu próximo auto<br>está acá.</h1>
+   <h1>Tu próximo auto<br><span>está acá.</span></h1>
    <p>Encontrá oportunidades, compará vehículos y contactá directo con particulares y concesionarias de Córdoba y alrededores.</p>
+   <div class="hero-badges"><span>📸 Con fotos reales</span><span>💬 Contacto por WhatsApp</span><span>✅ Publicaciones revisadas</span></div>
    <form class="searchbox" id="homeSearch">
     <input class="q" name="q" placeholder="Marca o modelo (ej. Gol, Hilux)" value="${esc(f.q)}" enterkeyhint="search">
-    <select name="seller">${opts({ dealer: "Concesionaria", individual: "Particular" }, f.seller, "Todos los vendedores")}</select>
-    <select name="city">${cityOpts(f.city, "Todas las zonas")}</select>
+    <select name="seller">${opts({ dealer: "Concesionarias", individual: "Particulares" }, f.seller, "Vendedor: todos")}</select>
+    <select name="city">${cityOpts(f.city, "Zona: todas")}</select>
     <button class="btn" type="submit">Buscar autos</button>
    </form>
   </section>
   <div class="sectionhead"><div><div class="eyebrow">Recién publicados</div><h2>Vehículos para descubrir</h2></div><a class="btn light" href="#/comprar">Ver todos</a></div>
   <div id="featured" class="grid"><div class="loading">Cargando vehículos…</div></div>
-  <div class="panel" style="display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap">
-   <div><h3 style="margin:0">¿Querés vender tu auto?</h3><p class="muted" style="margin:4px 0 0">Publicá gratis con fotos en pocos minutos. Te contactan directo por WhatsApp.</p></div>
-   <a class="btn" href="#/publicar">Publicar mi auto</a>
+  <div class="panel promo warm">
+   <div><h3 style="margin:0">🚀 ¿Querés vender tu auto?</h3><p class="muted" style="margin:4px 0 0">Publicá gratis con fotos en pocos minutos. Te contactan directo por WhatsApp.</p></div>
+   <a class="btn warm" href="#/publicar">Publicar mi auto</a>
   </div>
-  <div class="panel" style="display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap">
-   <div><h3 style="margin:0">¿Tenés una concesionaria?</h3><p class="muted" style="margin:4px 0 0">Creá la cuenta de tu agencia y publicá todo tu inventario.</p></div>
-   <a class="btn dark" href="#/mi-cuenta">Registrar mi agencia</a>
+  <div class="panel promo">
+   <div><h3 style="margin:0">🏢 ¿Tenés una concesionaria?</h3><p class="muted" style="margin:4px 0 0">Creá la cuenta de tu agencia y publicá todo tu inventario.</p></div>
+   <a class="btn" href="#/mi-cuenta">Registrar mi agencia</a>
   </div>`;
   $("#homeSearch").addEventListener("submit", e => {
     e.preventDefault();
@@ -207,13 +222,13 @@ function buildQuery(f) {
   for (const t of terms) q = q.or(`brand.ilike.%${t}%,model.ilike.%${t}%,version.ilike.%${t}%`);
   if (f.seller) q = q.eq("seller_type", f.seller);
   if (f.city) q = q.eq("city", f.city);
-  if (f.maxPrice) q = q.lte("price", Number(f.maxPrice));
+  if (digits(f.maxPrice)) q = q.eq("currency", f.priceCur || "ARS").lte("price", Number(digits(f.maxPrice)));
   if (f.minYear) q = q.gte("year", Number(f.minYear));
   if (f.fuel) q = q.eq("fuel", f.fuel);
   if (f.transmission) q = q.eq("transmission", f.transmission);
   q = q.order("featured", { ascending: false });
-  if (f.sort === "price_asc") q = q.order("price", { ascending: true, nullsFirst: false });
-  else if (f.sort === "price_desc") q = q.order("price", { ascending: false, nullsFirst: false });
+  if (f.sort === "price_asc") q = q.order("currency").order("price", { ascending: true, nullsFirst: false });
+  else if (f.sort === "price_desc") q = q.order("currency").order("price", { ascending: false, nullsFirst: false });
   else if (f.sort === "year_desc") q = q.order("year", { ascending: false, nullsFirst: false });
   else if (f.sort === "km_asc") q = q.order("mileage", { ascending: true, nullsFirst: false });
   return q.order("created_at", { ascending: false });
@@ -226,9 +241,9 @@ async function renderCatalog() {
   <form class="panel" id="filters" style="margin-top:0">
    <div class="filters">
     <input class="q" name="q" placeholder="Marca, modelo o versión" value="${esc(f.q)}" enterkeyhint="search">
-    <select name="seller">${opts({ dealer: "Concesionaria", individual: "Particular" }, f.seller, "Todos los vendedores")}</select>
-    <select name="city">${cityOpts(f.city, "Todas las localidades")}</select>
-    <input name="maxPrice" type="number" inputmode="numeric" placeholder="Precio máximo $" value="${esc(f.maxPrice)}">
+    <select name="seller">${opts({ dealer: "Concesionarias", individual: "Particulares" }, f.seller, "Vendedor")}</select>
+    <select name="city">${cityOpts(f.city, "Localidad")}</select>
+    <div class="price-input"><select name="priceCur" aria-label="Moneda">${opts({ ARS: "$ ARS", USD: "US$" }, f.priceCur)}</select><input name="maxPrice" data-num inputmode="numeric" placeholder="Precio máximo" value="${esc(f.maxPrice)}"></div>
     <input name="minYear" type="number" inputmode="numeric" placeholder="Desde el año" value="${esc(f.minYear)}">
     <select name="fuel">${opts(FUEL, f.fuel, "Combustible")}</select>
     <select name="transmission">${opts(TRANS, f.transmission, "Caja")}</select>
@@ -249,6 +264,7 @@ async function renderCatalog() {
     $("#resultCount").textContent = `${count ?? offset} vehículo${count === 1 ? "" : "s"}`;
     $("#more").classList.toggle("hidden", offset >= (count || 0));
   };
+  numInputs($("#filters"));
   $("#filters").addEventListener("submit", e => {
     e.preventDefault();
     const d = new FormData(e.target);
@@ -256,7 +272,7 @@ async function renderCatalog() {
     offset = 0; $("#catalogGrid").innerHTML = '<div class="loading">Buscando…</div>'; load(false);
   });
   $("#clearF").addEventListener("click", () => {
-    state.filters = { q: "", seller: "", city: "", maxPrice: "", minYear: "", fuel: "", transmission: "", sort: "recent" };
+    state.filters = { q: "", seller: "", city: "", priceCur: "ARS", maxPrice: "", minYear: "", fuel: "", transmission: "", sort: "recent" };
     renderCatalog();
   });
   $("#more").addEventListener("click", e => busy(e.target, () => load(true)));
@@ -269,7 +285,7 @@ async function renderVehicle(id) {
   const { data: v, error } = await db.from("vehicles").select("*,dealership:dealerships(name,phone,city)").eq("id", id).maybeSingle();
   if (error) throw error;
   if (!v) { app().innerHTML = `<div class="empty" style="margin-top:20px">Esta publicación no existe o ya no está disponible.<br><br><a class="btn" href="#/comprar">Ver otros autos</a></div>`; return; }
-  setMeta(`${title(v)} ${v.year || ""}`, `${title(v)} ${v.version || ""} ${v.year || ""} en ${v.city || "Córdoba"}. ${money(v.price)}. Contactá al vendedor en Autos Córdoba.`);
+  setMeta(`${title(v)} ${v.year || ""}`, `${title(v)} ${v.version || ""} ${v.year || ""} en ${v.city || "Córdoba"}. ${money(v.price, v.currency)}. Contactá al vendedor en Autos Córdoba.`);
   const photos = v.photos || [];
   const slides = photos.length ? photos.map((p, i) => `<img src="${esc(photoUrl(p))}" alt="${esc(title(v))} foto ${i + 1}" ${i ? 'loading="lazy"' : ""}>`).join("") : '<div class="noimg">🚗</div>';
   const thumbs = photos.length > 1 ? `<div class="thumbs">${photos.map((p, i) => `<button type="button" data-i="${i}" class="${i ? "" : "on"}"><img src="${esc(photoUrl(p))}" alt="" loading="lazy"></button>`).join("")}</div>` : "";
@@ -292,10 +308,10 @@ async function renderVehicle(id) {
    </div>
    <aside class="sticky">
     <div class="panel" style="margin-top:0">
-     <span class="pill">${esc(sellerName)}</span>${v.featured ? ' <span class="pill" style="background:#fff3c4;color:#7a5600">★ Destacado</span>' : ""}
+     <span class="pill">${esc(sellerName)}</span>${v.featured ? ' <span class="pill star">★ Destacado</span>' : ""}
      <h1 style="margin:10px 0 2px;font-size:26px;line-height:1.15">${esc(title(v))}</h1>
      <div class="muted">${esc(v.version || "")}</div>
-     <div class="price" style="font-size:30px">${money(v.price)}</div>
+     <div class="price" style="font-size:32px">${money(v.price, v.currency)}</div>
      <div class="specs" style="font-size:13px"><span>${esc(v.year || "")}</span><span>${km(v.mileage)}</span><span>${esc(v.city || "")}</span></div>
      <div class="actions">
       ${wa ? `<a class="btn wa block" href="${esc(wa)}" target="_blank" rel="noopener">Escribir por WhatsApp</a>` : ""}
@@ -324,7 +340,7 @@ async function renderVehicle(id) {
   sl.addEventListener("scroll", () => { cancelAnimationFrame(sync._r); sync._r = requestAnimationFrame(sync); }, { passive: true });
   $$(".thumbs button").forEach(b => b.addEventListener("click", () => sl.scrollTo({ left: sl.clientWidth * Number(b.dataset.i), behavior: "smooth" })));
   $("#share").addEventListener("click", async () => {
-    const url = vehicleUrl(v.id), text = `${title(v)} ${v.year || ""} — ${money(v.price)}`;
+    const url = vehicleUrl(v.id), text = `${title(v)} ${v.year || ""} — ${money(v.price, v.currency)}`;
     if (navigator.share) { try { await navigator.share({ title: text, text, url }); } catch (_) { } }
     else { try { await navigator.clipboard.writeText(url); toast("Link copiado."); } catch (_) { prompt("Copiá este link:", url); } }
   });
@@ -411,8 +427,8 @@ async function renderForm(id) {
     <div class="field"><label>Modelo *</label><input name="model" required maxlength="80" placeholder="Ej. Amarok" value="${val("model")}" autocapitalize="words"></div>
     <div class="field"><label>Versión</label><input name="version" maxlength="80" placeholder="Ej. 2.0 TDI Highline 4x4" value="${val("version")}"></div>
     <div class="field"><label>Año *</label><input name="year" required type="number" inputmode="numeric" min="1950" max="2030" placeholder="2020" value="${val("year")}"></div>
-    <div class="field"><label>Precio en pesos *</label><input name="price" required type="number" inputmode="numeric" min="1" placeholder="25000000" value="${val("price")}"></div>
-    <div class="field"><label>Kilómetros</label><input name="mileage" type="number" inputmode="numeric" min="0" placeholder="80000" value="${val("mileage")}"></div>
+    <div class="field"><label>Precio *</label><div class="price-input"><select name="currency" aria-label="Moneda">${opts({ ARS: "$ ARS", USD: "US$" }, v?.currency || "ARS")}</select><input name="price" required data-num inputmode="numeric" placeholder="25.000.000" value="${esc(dots(v?.price))}"></div><div class="preview" id="pricePreview"></div></div>
+    <div class="field"><label>Kilómetros</label><input name="mileage" data-num inputmode="numeric" placeholder="80.000" value="${esc(dots(v?.mileage))}"></div>
     <div class="field"><label>Combustible</label><select name="fuel">${opts(FUEL, v?.fuel, "Elegí…")}</select></div>
     <div class="field"><label>Caja</label><select name="transmission">${opts(TRANS, v?.transmission, "Elegí…")}</select></div>
     <div class="field"><label>Localidad *</label><select name="city" required>${cityOpts(v?.city || "Córdoba Capital")}</select></div>
@@ -421,6 +437,17 @@ async function renderForm(id) {
    </div>
    <div class="actions"><button class="btn" type="submit" id="saveBtn">${id ? "Guardar cambios" : "Enviar publicación"}</button><a class="btn ghost" href="${id ? "#/mi-cuenta" : "#/"}">Cancelar</a></div>
   </form>`;
+  numInputs($("#carForm"));
+  const pricePreview = () => {
+    const cur = $('[name="currency"]').value, nPrice = Number(digits($('[name="price"]').value));
+    let txt = nPrice ? `${money(nPrice, cur)} ${cur === "USD" ? "dólares" : "pesos"}` : "";
+    if (nPrice && cur === "ARS" && nPrice < 500000) txt += " — ¿seguro? Parece bajo para pesos";
+    if (nPrice && cur === "USD" && nPrice > 500000) txt += " — ¿seguro? Parece alto para dólares";
+    $("#pricePreview").textContent = txt;
+  };
+  $('[name="price"]').addEventListener("input", pricePreview);
+  $('[name="currency"]').addEventListener("change", pricePreview);
+  pricePreview();
   const drawPhotos = () => {
     $("#photos").innerHTML = photos.map((p, i) => `<div class="photo"><img src="${esc(photoUrl(p))}" alt="">
       <button type="button" class="x" data-del="${i}" aria-label="Quitar foto">×</button>
@@ -452,12 +479,13 @@ async function renderForm(id) {
     if (!photos.length && !confirm("No agregaste fotos. Las publicaciones con fotos se venden mucho más rápido. ¿Publicar igual?")) return;
     const d = new FormData(form);
     const s = k => String(d.get(k) ?? "").trim();
-    const n = k => s(k) ? Number(s(k)) : null;
+    const n = k => digits(s(k)) ? Number(digits(s(k))) : null;
     const row = {
-      brand: s("brand"), model: s("model"), version: s("version") || null, year: n("year"), price: n("price"),
+      brand: s("brand"), model: s("model"), version: s("version") || null, year: n("year"), price: n("price"), currency: s("currency") === "USD" ? "USD" : "ARS",
       mileage: n("mileage"), fuel: s("fuel") || null, transmission: s("transmission") || null, city: s("city"),
       contact_phone: s("contact_phone") || null, description: s("description") || null, photos,
     };
+    if (!row.price) { toast("Ingresá el precio."); return; }
     if (row.contact_phone && row.contact_phone.replace(/\D/g, "").length < 8) { toast("Revisá el número de WhatsApp."); return; }
     await busy($("#saveBtn"), async () => {
       let error;
@@ -485,7 +513,7 @@ async function renderForm(id) {
 function vehicleRow(v, actions) {
   const img = v.photos?.[0] ? `<img src="${esc(photoUrl(v.photos[0]))}" alt="" loading="lazy">` : "🚗";
   return `<div class="row"><a class="thumb" href="#/auto/${v.id}">${img}</a>
-   <div class="info"><b>${esc(title(v))} ${esc(v.year || "")}</b><span class="muted small">${money(v.price)} · ${esc(v.city || "")}</span><br>${pill(v.status)}${v.featured ? ' <span class="pill">★ Destacado</span>' : ""}${v.extra || ""}</div>
+   <div class="info"><b>${esc(title(v))} ${esc(v.year || "")}</b><span class="muted small">${money(v.price, v.currency)} · ${esc(v.city || "")}</span><br>${pill(v.status)}${v.featured ? ' <span class="pill">★ Destacado</span>' : ""}${v.extra || ""}</div>
    <div class="btns">${actions}</div></div>`;
 }
 async function renderAccount() {
@@ -494,7 +522,7 @@ async function renderAccount() {
   app().innerHTML = '<div class="loading">Cargando tu cuenta…</div>';
   const uid = state.user.id;
   const dealerIds = state.memberships.map(m => m.id);
-  let vq = db.from("vehicles").select("id,brand,model,year,price,city,status,photos,featured,seller_id,dealership_id,created_at").order("created_at", { ascending: false });
+  let vq = db.from("vehicles").select("id,brand,model,year,price,currency,city,status,photos,featured,seller_id,dealership_id,created_at").order("created_at", { ascending: false });
   vq = dealerIds.length ? vq.or(`seller_id.eq.${uid},dealership_id.in.(${dealerIds.join(",")})`) : vq.eq("seller_id", uid);
   const [{ data: vehicles, error: ve }, { data: reqs }] = await Promise.all([
     vq, db.from("agency_requests").select("id,dealership_name,status,created_at").eq("requested_by", uid).order("created_at", { ascending: false }),
@@ -613,7 +641,7 @@ async function renderAdmin() {
   else await adminInquiries(body);
 }
 async function adminPubs(body) {
-  let q = db.from("vehicles").select("id,brand,model,year,price,city,status,photos,featured,seller_type,created_at,seller:profiles(email),dealership:dealerships(name)").order("created_at", { ascending: false }).limit(200);
+  let q = db.from("vehicles").select("id,brand,model,year,price,currency,city,status,photos,featured,seller_type,created_at,seller:profiles(email),dealership:dealerships(name)").order("created_at", { ascending: false }).limit(200);
   if (adminPubFilter) q = q.eq("status", adminPubFilter);
   const { data, error } = await q; if (error) throw error;
   const list = data || [];
